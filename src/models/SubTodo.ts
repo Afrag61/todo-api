@@ -1,5 +1,5 @@
-import {Schema} from "mongoose";
-import {SubTodo} from "../types";
+import { Schema } from "mongoose";
+import { SubTodo } from "../types";
 
 const SubTodoSchema = new Schema<SubTodo>({
   id: Schema.Types.ObjectId,

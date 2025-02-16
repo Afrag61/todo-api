@@ -1,7 +1,9 @@
+import { Schema, Types } from "mongoose";
 import { TodoActionType } from "./enums";
 
 export type Todo = {
-  id?: string;
+  _id: Types.ObjectId;
+  id?: Schema.Types.ObjectId;
   title: string;
   description: string;
   isChecked: boolean;
@@ -16,6 +18,6 @@ export type SubTodo = Omit<Todo, "subTodos" | "history">;
 export type History = {
   actionOn: string;
   actionType: keyof typeof TodoActionType;
-  field: keyof (Todo & {Todo: string});
+  field: keyof (Todo & { Todo: string });
   value?: unknown;
 };

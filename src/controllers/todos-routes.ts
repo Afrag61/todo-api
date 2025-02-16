@@ -1,6 +1,6 @@
 import express from "express";
 import TodoModel from "../models/Todo";
-import {SubTodo} from "../types";
+import SubTodosRouter from './subtodos-routes';
 
 const router = express.Router();
 
@@ -42,51 +42,11 @@ router.post("/add-todo", async (req, res) => {
   }
 });
 
-router.post("/:id/add-sub-todo", async (req, res) => {
-  const {id} = req.params;
-  const {title, description, isChecked, dueDateTime} = req.body;
-
-  if (!title || !description) {
-    res.status(400).json({
-      isSuccess: false,
-      error: "Title, description are required.",
-    });
-  } else {
-    try {
-      const subTodo: SubTodo = {
-        title: title,
-        description: description,
-        dueDateTime: dueDateTime,
-        createdOn: new Date().toISOString(),
-        isChecked: isChecked,
-      }
-      const todo = await TodoModel.findByIdAndUpdate(id, {
-          $push: {
-            subTodos: subTodo, history: {
-              actionOn: new Date().toISOString(),
-              actionType: 'Add',
-              field: 'subTodos',
-              value: subTodo
-            }
-          },
-        }, {safe: true, upsert: true, new: true},
-      ).exec();
-
-      res.status(201).send({
-        isSuccess: true,
-        todo,
-      });
-    } catch (error) {
-      res.status(500).json({isSuccess: false, error: "Error getting todo."});
-    }
-  }
-})
-
-router.get("/:id", async (req, res) => {
-  const {id} = req.params;
+router.get("/:todoId", async (req, res) => {
+  const {todoId} = req.params;
 
   try {
-    const todo = await TodoModel.findById(id).exec();
+    const todo = await TodoModel.findById(todoId).exec();
     if (!todo) {
       res.status(404).json({isSuccess: false, error: "Todo not found."});
     } else {
@@ -97,11 +57,11 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
-  const {id} = req.params;
+router.delete("/:todoId", async (req, res) => {
+  const {todoId} = req.params;
 
   try {
-    const isDeleted = await TodoModel.findByIdAndDelete(id).exec();
+    const isDeleted = await TodoModel.findByIdAndDelete(todoId).exec();
 
     if (!isDeleted) {
       res.status(400).json({
@@ -116,12 +76,12 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.patch("/:id/toggle-check", async (req, res) => {
-  const {id} = req.params;
+router.patch("/:todoId/toggle-check", async (req, res) => {
+  const {todoId} = req.params;
 
   try {
-    const currentTodo = await TodoModel.findById(id, "isChecked history");
-    const updatedTodo = await TodoModel.findByIdAndUpdate(id, {
+    const currentTodo = await TodoModel.findById(todoId, "isChecked history");
+    const updatedTodo = await TodoModel.findByIdAndUpdate(todoId, {
       isChecked: !currentTodo?.isChecked,
       $push: {
         history: {
@@ -144,6 +104,8 @@ router.patch("/:id/toggle-check", async (req, res) => {
     res.status(500).json({isSuccess: false, error: "Error checking todo."});
   }
 });
+
+router.use('/:todoId/sub-todos', SubTodosRouter)
 
 router.get("/", async (_, res) => {
   try {
