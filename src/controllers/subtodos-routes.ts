@@ -118,7 +118,6 @@ router.delete<typeof route, WithParentParams<typeof route>>("/:subTodoId", async
     }
 });
 
-
 route = '/:subTodoId/toggle-check' as const;
 router.patch<typeof route, WithParentParams<typeof route>>("/:subTodoId/toggle-check", async (req, res) => {
     const { todoId, subTodoId } = req.params;

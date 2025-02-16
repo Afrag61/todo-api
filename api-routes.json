@@ -1,0 +1,64 @@
+{
+    "todos": {
+        "url": "http://localhost:3000/todos",
+        "path": "/todos",
+        "routes": {
+            "add-todo": {
+                "url": "http://localhost:3000/todos/add-todo",
+                "path": "/add-todo",
+                "method": "POST"
+            },
+            "get-todo-by-id": {
+                "url": "http://localhost:3000/todos/:todoId",
+                "path": "/:todoId",
+                "method": "GET"
+            },
+            "delete-todo-by-id": {
+                "url": "http://localhost:3000/todos/:todoId",
+                "path": "/:todoId",
+                "method": "DELETE"
+            },
+            "toggle-todo-check": {
+                "url": "http://localhost:3000/todos/:todoId/toggle-check",
+                "path": "/:todoId/toggle-check",
+                "method": "PATCH"
+            },
+            "sub-todos": {
+                "url": "http://localhost:3000/todos/:todoId/sub-todos",
+                "path": "/:todoId/sub-todos",
+                "routes": {
+                    "add-sub-todo": {
+                        "url": "http://localhost:3000/todos/:todoId/sub-todos/add-sub-todo",
+                        "path": "/add-sub-todo",
+                        "method": "POST"
+                    },
+                    "get-sub-todo-by-id": {
+                        "url": "http://localhost:3000/todos/:todoId/sub-todos/:subTodoId",
+                        "path": "/:subTodoId",
+                        "method": "GET"
+                    },
+                    "delete-sub-todo-by-id": {
+                        "url": "http://localhost:3000/todos/:todoId/sub-todos/:subTodoId",
+                        "path": "/:subTodoId",
+                        "method": "DELETE"
+                    },
+                    "toggle-sub-todo-check": {
+                        "url": "http://localhost:3000/todos/:todoId/sub-todos/:subTodoId/toggle-check",
+                        "path": "/:subTodoId/toggle-check",
+                        "method": "PATCH"
+                    },
+                    "get-all-sub-todos-for-a-todo": {
+                        "url": "http://localhost:3000/todos/:todoId/sub-todos/",
+                        "path": "/",
+                        "method": "GET"
+                    }
+                }
+            },
+            "get-all-todos": {
+                "url": "http://localhost:3000/todos/",
+                "path": "/",
+                "method": "GET"
+            }
+        }
+    }
+}
