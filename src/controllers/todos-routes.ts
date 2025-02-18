@@ -57,6 +57,25 @@ router.get("/:todoId", async (req, res) => {
   }
 });
 
+router.patch("/:todoId", async (req, res) => {
+  const {todoId} = req.params;
+
+  try {
+    const result = await TodoModel.findByIdAndUpdate(todoId, {...req.body}).exec();
+
+    if (!result) {
+      res.status(400).json({
+        isSuccess: false,
+        error: "Some error happened while editing the todo.",
+      });
+    } else {
+      res.json({isSuccess: true});
+    }
+  } catch (error) {
+    res.status(500).json({isSuccess: false, error: "Error editing todo."});
+  }
+});
+
 router.delete("/:todoId", async (req, res) => {
   const {todoId} = req.params;
 
