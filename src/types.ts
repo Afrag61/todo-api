@@ -9,7 +9,7 @@ export type Todo = {
   isChecked: boolean;
   createdOn: string;
   dueDateTime: string;
-  subTodos: SubTodo[];
+  subTodos: (SubTodo | undefined)[];
   history: History[];
 };
 

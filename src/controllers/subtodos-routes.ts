@@ -69,7 +69,7 @@ router.get<typeof route, WithParentParams<typeof route>>(
     try {
       const todo = await TodoModel.findById(todoId).exec();
       const subTodo = todo?.subTodos?.find(
-        (subTodo) => subTodo._id.toString() == subTodoId
+        (subTodo) => subTodo?._id.toString() == subTodoId
       );
       if (subTodo) {
         res.status(200).json({
@@ -105,6 +105,9 @@ router.patch<typeof route, WithParentParams<typeof route>>(
         let subTodo = todo?.subTodos?.find(
           (subTodo) => subTodo?._id?.toString() == subTodoId
         );
+        let subTodoIndex = todo?.subTodos?.findIndex(
+          (subTodo) => subTodo?._id?.toString() == subTodoId
+        );
         if (!subTodo) {
           res.status(404).json({
             isSuccess: false,
@@ -112,6 +115,10 @@ router.patch<typeof route, WithParentParams<typeof route>>(
           });
         } else {
           subTodo = { ...req.body };
+
+          todo.subTodos = todo?.subTodos?.map((s, i) =>
+            i === subTodoIndex ? subTodo : s
+          );
 
           todo
             .save()
