@@ -2,7 +2,10 @@ import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 
-import todosRoutes from "./src/controllers/todos-routes";
+import todosRoutes from "./src/routes/todos.routes";
+import subTodosRoutes from "./src/routes/sub-todos.routes";
+import historyRoutes from "./src/routes/sub-todos.routes";
+import errorHandler from "./src/middleware/error-handler";
 
 const uri =
   "mongodb+srv://mfrag38:Wx11Aa50E^nV@cluster0.5yhdu.mongodb.net/todo-app?retryWrites=true&w=majority&appName=Cluster0";
@@ -30,6 +33,8 @@ app.use(express.json());
 
 app.use("/todos", todosRoutes);
 
+app.use(errorHandler);
+
 mongoose
   .connect(uri, clientOptions)
   .then(() => {
@@ -39,3 +44,7 @@ mongoose
   .catch((err) => {
     console.log("Connection Error:", err);
   });
+
+process.on("UnhandledPromiseRejection", (err) => {
+  console.log("Unhandled Promise Rejection:", err);
+});

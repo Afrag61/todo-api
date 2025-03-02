@@ -1,7 +1,5 @@
 import { Schema, model } from "mongoose";
-import { Todo } from "../types";
-import SubTodoSchema from "./SubTodo";
-import HistorySchema from "./History";
+import { Todo } from "../types/todo.types";
 
 const TodoSchema = new Schema<Todo>(
   {
@@ -11,8 +9,14 @@ const TodoSchema = new Schema<Todo>(
     isChecked: Boolean,
     createdOn: String,
     dueDateTime: String,
-    subTodos: [SubTodoSchema],
-    history: [HistorySchema],
+    subTodos: [{
+      type: Schema.Types.ObjectId,
+      ref: "SubTodo",
+    }],
+    history: [{
+      type: Schema.Types.ObjectId,
+      ref: "History",
+    }],
   },
   {
     versionKey: false,
@@ -27,4 +31,4 @@ const TodoSchema = new Schema<Todo>(
 
 const TodoModel = model("Todo", TodoSchema);
 
-export default TodoModel;
+export {TodoModel, TodoSchema};

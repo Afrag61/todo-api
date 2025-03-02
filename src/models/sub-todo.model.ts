@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import { SubTodo } from "../types";
+import { model, Schema } from "mongoose";
+import { SubTodo } from "../types/sub-todo.types";
 
 const SubTodoSchema = new Schema<SubTodo>({
   id: Schema.Types.ObjectId,
@@ -18,4 +18,6 @@ const SubTodoSchema = new Schema<SubTodo>({
   }
 });
 
-export default SubTodoSchema;
+const SubTodoModel = model("SubTodo", SubTodoSchema);
+
+export {SubTodoModel, SubTodoSchema};
