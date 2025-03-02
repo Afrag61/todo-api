@@ -3,8 +3,6 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 
 import todosRoutes from "./src/routes/todos.routes";
-import subTodosRoutes from "./src/routes/sub-todos.routes";
-import historyRoutes from "./src/routes/sub-todos.routes";
 import errorHandler from "./src/middleware/error-handler";
 
 const uri =

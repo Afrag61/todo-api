@@ -1,17 +1,17 @@
-import express from 'express';
+import express from "express";
 import {
-    addHistory,
-    deleteHistoryById,
-    getAllHistorys,
-    getHistoryById
+  addHistory,
+  /* deleteHistoryById, */
+  /* getAllHistory, */
+  getHistoryById,
 } from "../controllers/history.controller";
 
-const router = express.Router({mergeParams: true});
+const router = express.Router({ mergeParams: true });
 
-router.post('/add-history', addHistory);
+router.post("/add-history", addHistory);
 
-router.route('/:id').get(getHistoryById).delete(deleteHistoryById);
+router.route("/:id").get(getHistoryById) /* .delete(deleteHistoryById) */;
 
-router.get('/', getAllHistorys);
+// router.get('/', getAllHistory);
 
 export default router;

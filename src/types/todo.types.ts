@@ -1,6 +1,6 @@
 import { Document, Schema } from "mongoose";
 
-export type Todo = Document & {
+export type Todo = {
   _id?: Schema.Types.ObjectId;
   id?: Schema.Types.ObjectId;
   title: string;
@@ -9,5 +9,5 @@ export type Todo = Document & {
   createdOn: string;
   dueDateTime: string;
   subTodos: Schema.Types.ObjectId[];
-  history: Schema.Types.ObjectId[];
-}
+  // history: Schema.Types.ObjectId[];
+};
