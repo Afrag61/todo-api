@@ -6,12 +6,12 @@ import AppError from "../utils/app-error";
 import { GenericValidationError } from "../common/types";
 
 const addTodo = async (req: Request, res: Response, next: NextFunction) => {
-  const doc = await baseController.createOne(
-    TodoModel,
-    req.body,
-    todoCriteria,
-    next
-  );
+  const doc = await baseController.createOne({
+    model: TodoModel,
+    data: req.body,
+    criteria: todoCriteria,
+    next,
+  });
 
   if (doc) {
     res.status(201).json({
@@ -25,7 +25,7 @@ const getTodoById = async (req: Request, res: Response, next: NextFunction) => {
   const { todoId } = req.params;
 
   baseController
-    .getOne(TodoModel, todoId, next)
+    .getOne({ model: TodoModel, id: todoId, next, populate: ["subTodos"] })
     .then((doc) => {
       return res.status(200).json({
         status: "success",
@@ -45,7 +45,7 @@ const updateTodoById = async (
   const { todoId } = req.params;
 
   baseController
-    .updateOne(TodoModel, todoId, req.body, next)
+    .updateOne({ model: TodoModel, id: todoId, data: req.body, next })
     .then((newDoc) => {
       return res.status(200).json({
         status: "success",
@@ -65,7 +65,7 @@ const deleteTodoById = async (
   const { todoId } = req.params;
 
   baseController
-    .deleteOne(TodoModel, todoId, next)
+    .deleteOne({ model: TodoModel, id: todoId, next })
     .then(() => {
       return res.status(200).json({
         status: "success",
@@ -76,9 +76,43 @@ const deleteTodoById = async (
     });
 };
 
+const toggleTodoCheck = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { todoId } = req.params;
+
+  const currentTodo = await baseController.getOne({
+    model: TodoModel,
+    id: todoId,
+    next,
+    projections: ["isChecked"],
+  });
+
+  const updatedTodo = await baseController.updateOne({
+    model: TodoModel,
+    id: todoId,
+    data: { isChecked: !currentTodo?.isChecked },
+    next,
+  });
+
+  if (updatedTodo) {
+    res.status(200).json({
+      status: "success",
+      data: updatedTodo,
+    });
+  }
+};
+
 const getAllTodos = async (req: Request, res: Response, next: NextFunction) => {
   const { page, limit } = req.body;
-  const docs = await baseController.getAll(TodoModel, next, { page, limit });
+  const docs = await baseController.getAll({
+    model: TodoModel,
+    next,
+    pagination: { page, limit },
+    populate: ["subTodos"],
+  });
 
   if (docs) {
     res.status(200).json({
@@ -89,4 +123,11 @@ const getAllTodos = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { addTodo, getTodoById, updateTodoById, deleteTodoById, getAllTodos };
+export {
+  addTodo,
+  getTodoById,
+  updateTodoById,
+  deleteTodoById,
+  toggleTodoCheck,
+  getAllTodos,
+};

@@ -11,16 +11,21 @@ const addSubTodo = async (req: Request, res: Response, next: NextFunction) => {
     const { todoId } = req.params;
 
     baseController
-      .createOne(SubTodoModel, { ...req.body, todoId }, subTodoCriteria, next)
+      .createOne({
+        model: SubTodoModel,
+        data: { ...req.body, todoId },
+        criteria: subTodoCriteria,
+        next,
+      })
       .then((doc) => {
         if (doc) {
           baseController
-            .updateOne(
-              TodoModel,
-              todoId,
-              { $push: { subTodos: doc._id } },
-              next
-            )
+            .updateOne({
+              model: TodoModel,
+              id: todoId,
+              data: { $push: { subTodos: doc._id } },
+              next,
+            })
             .then((newDoc) => {
               return res.status(201).json({
                 status: "success",
@@ -58,7 +63,7 @@ const getSubTodoById = async (
 ) => {
   const { subTodoId } = req.params;
   baseController
-    .getOne(SubTodoModel, subTodoId, next)
+    .getOne({ model: SubTodoModel, id: subTodoId, next })
     .then((doc) => {
       return res.status(200).json({
         status: "success",
@@ -78,7 +83,7 @@ const updateSubTodoById = async (
   const { subTodoId } = req.params;
 
   baseController
-    .updateOne(SubTodoModel, subTodoId, req.body, next)
+    .updateOne({ model: SubTodoModel, id: subTodoId, data: req.body, next })
     .then((newDoc) => {
       return res.status(200).json({
         status: "success",
@@ -98,11 +103,16 @@ const deleteSubTodoById = async (
   const { todoId, subTodoId } = req.params;
 
   baseController
-    .deleteOne(SubTodoModel, subTodoId, next)
+    .deleteOne({ model: SubTodoModel, id: subTodoId, next })
     .then((doc) => {
       if (doc) {
         baseController
-          .updateOne(TodoModel, todoId, { $pull: { subTodos: doc._id } }, next)
+          .updateOne({
+            model: TodoModel,
+            id: todoId,
+            data: { $pull: { subTodos: doc._id } },
+            next,
+          })
           .then(() => {
             return res.status(200).json({
               status: "success",
@@ -129,6 +139,35 @@ const deleteSubTodoById = async (
     });
 };
 
+const toggleSubTodoCheck = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { subTodoId } = req.params;
+
+  const currentSubTodo = await baseController.getOne({
+    model: SubTodoModel,
+    id: subTodoId,
+    next,
+    projections: ["isChecked"],
+  });
+
+  const updatedSubTodo = await baseController.updateOne({
+    model: SubTodoModel,
+    id: subTodoId,
+    data: { isChecked: !currentSubTodo?.isChecked },
+    next,
+  });
+
+  if (updatedSubTodo) {
+    res.status(200).json({
+      status: "success",
+      data: updatedSubTodo,
+    });
+  }
+};
+
 const getAllSubTodosById = async (
   req: Request,
   res: Response,
@@ -137,7 +176,13 @@ const getAllSubTodosById = async (
   const { todoId } = req.params;
 
   baseController
-    .getOne(TodoModel, todoId, next, ["subTodos"])
+    .getOne({
+      model: TodoModel,
+      id: todoId,
+      next,
+      projections: ["subTodos"],
+      populate: ["subTodos"],
+    })
     .then((doc) => {
       return res.status(200).json({
         status: "success",
@@ -158,7 +203,7 @@ const getAllSubTodos = async (
   const { page, limit } = req.body;
 
   baseController
-    .getAll(SubTodoModel, next, { page, limit })
+    .getAll({ model: SubTodoModel, next, pagination: { page, limit } })
     .then((docs) => {
       return res.status(200).json({
         status: "success",
@@ -176,6 +221,7 @@ export {
   getSubTodoById,
   updateSubTodoById,
   deleteSubTodoById,
+  toggleSubTodoCheck,
   getAllSubTodosById,
   getAllSubTodos,
 };

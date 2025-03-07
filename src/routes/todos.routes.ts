@@ -4,6 +4,7 @@ import {
   deleteTodoById,
   getAllTodos,
   getTodoById,
+  toggleTodoCheck,
   updateTodoById,
 } from "../controllers/todos.controller";
 import subTodosRoutes from "../routes/sub-todos.routes";
@@ -19,9 +20,9 @@ router
   .patch(updateTodoById)
   .delete(deleteTodoById);
 
-router.use("/:todoId/sub-todos", subTodosRoutes);
+router.route("/:todoId/toggle-check").patch(toggleTodoCheck);
 
-/* router.use("/:todoId/history", historyRoutes); */
+router.use("/:todoId/sub-todos", subTodosRoutes);
 
 router.get("/", getAllTodos);
 

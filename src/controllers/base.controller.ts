@@ -10,12 +10,17 @@ import paginateQuery from "../utils/pagination-helper";
 
 type GenericModel<T extends Document> = Model<T>;
 
-const createOne = async <T extends Document>(
-  model: GenericModel<T>,
-  data: T,
-  criteria: GenericValidationCriteria<T>[],
-  next: NextFunction
-) => {
+const createOne = async <T extends Document>({
+  model,
+  data,
+  criteria,
+  next,
+}: {
+  model: GenericModel<T>;
+  data: T;
+  criteria: GenericValidationCriteria<T>[];
+  next: NextFunction;
+}) => {
   try {
     const { isValid, errors } = validate(data, criteria);
 
@@ -40,14 +45,23 @@ const createOne = async <T extends Document>(
   }
 };
 
-const getOne = async <T extends Document>(
-  model: GenericModel<T>,
-  id: string,
-  next: NextFunction,
-  projections?: (keyof T)[]
-) => {
+const getOne = async <T extends Document>({
+  model,
+  id,
+  next,
+  projections,
+  populate,
+}: {
+  model: GenericModel<T>;
+  id: string;
+  next: NextFunction;
+  projections?: (keyof T)[];
+  populate?: (keyof T)[];
+}) => {
   try {
-    const doc = await model.findById(id, projections);
+    const doc = await model
+      .findById(id, projections)
+      ?.populate(populate as string | string[]);
 
     if (!doc) {
       return next(new AppError(404, "fail", "No document found with that id"));
@@ -59,17 +73,26 @@ const getOne = async <T extends Document>(
   }
 };
 
-const updateOne = async <T extends Document>(
-  model: GenericModel<T>,
-  id: string,
-  data: UpdateQuery<T>,
-  next: NextFunction
-) => {
+const updateOne = async <T extends Document>({
+  model,
+  id,
+  data,
+  next,
+  populate,
+}: {
+  model: GenericModel<T>;
+  id: string;
+  data: UpdateQuery<T>;
+  next: NextFunction;
+  populate?: (keyof T)[];
+}) => {
   try {
-    const doc = await model.findByIdAndUpdate(id, data, {
-      new: true,
-      runValidators: true,
-    });
+    const doc = await model
+      .findByIdAndUpdate(id, data, {
+        new: true,
+        runValidators: true,
+      })
+      ?.populate(populate as string | string[]);
 
     if (!doc) {
       throw new AppError(404, "fail", "No document found with that id");
@@ -81,13 +104,21 @@ const updateOne = async <T extends Document>(
   }
 };
 
-const deleteOne = async <T extends Document>(
-  model: GenericModel<T>,
-  id: string,
-  next: NextFunction
-) => {
+const deleteOne = async <T extends Document>({
+  model,
+  id,
+  next,
+  populate,
+}: {
+  model: GenericModel<T>;
+  id: string;
+  next: NextFunction;
+  populate?: (keyof T)[];
+}) => {
   try {
-    const doc = await model.findByIdAndDelete(id);
+    const doc = await model
+      .findByIdAndDelete(id)
+      ?.populate(populate as string | string[]);
 
     if (!doc) {
       return next(new AppError(404, "fail", "No document found with that id"));
@@ -99,17 +130,26 @@ const deleteOne = async <T extends Document>(
   }
 };
 
-const getAll = async <T extends Document>(
-  model: GenericModel<T>,
-  next: NextFunction,
-  pagination: { page: number; limit: number },
-  projections?: (keyof T)[]
-) => {
+const getAll = async <T extends Document>({
+  model,
+  next,
+  pagination,
+  projections,
+  populate,
+}: {
+  model: GenericModel<T>;
+  next: NextFunction;
+  pagination: { page: number; limit: number };
+  projections?: (keyof T)[];
+  populate?: (keyof T)[];
+}) => {
   try {
     const { page, limit } = pagination;
 
     const docs = await paginateQuery(
-      model.find({}, projections?.join(" ")),
+      model
+        .find({}, projections?.join(" "))
+        ?.populate(populate as string | string[]),
       Number(page ?? 1),
       Number(limit)
     );

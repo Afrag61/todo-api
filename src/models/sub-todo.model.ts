@@ -3,11 +3,13 @@ import { SubTodo } from "../types/sub-todo.types";
 
 const SubTodoSchema = new Schema<Document & SubTodo>(
   {
-    id: Schema.Types.ObjectId,
     todoId: Schema.Types.ObjectId,
     title: String,
     description: String,
-    isChecked: Boolean,
+    isChecked: {
+      type: Boolean,
+      default: false,
+    },
     createdOn: String,
     dueDateTime: String,
   },

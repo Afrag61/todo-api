@@ -5,6 +5,7 @@ import {
   // getAllSubTodos,
   getAllSubTodosById,
   getSubTodoById,
+  toggleSubTodoCheck,
   updateSubTodoById,
 } from "../controllers/sub-todos.controller";
 
@@ -17,6 +18,8 @@ router
   .get(getSubTodoById)
   .patch(updateSubTodoById)
   .delete(deleteSubTodoById);
+
+router.route("/:subTodoId/toggle-check").patch(toggleSubTodoCheck);
 
 router.get("/", getAllSubTodosById);
 

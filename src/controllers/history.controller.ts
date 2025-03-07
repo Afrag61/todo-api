@@ -6,12 +6,12 @@ import AppError from "../utils/app-error";
 import { GenericValidationError } from "../common/types";
 
 const addHistory = (req: Request, res: Response, next: NextFunction) => {
-  const doc = baseController.createOne(
-    HistoryModel,
-    req.body,
-    historyCriteria,
-    next
-  );
+  const doc = baseController.createOne({
+    model: HistoryModel,
+    data: req.body,
+    criteria: historyCriteria,
+    next,
+  });
 
   res.status(201).json({
     status: "success",
@@ -26,7 +26,7 @@ const getHistoryById = async (
 ) => {
   const { subTodoId } = req.params;
   baseController
-    .getOne(HistoryModel, subTodoId, next)
+    .getOne({ model: HistoryModel, id: subTodoId, next })
     .then((doc) => {
       return res.status(200).json({
         status: "success",

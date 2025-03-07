@@ -1,8 +1,6 @@
 import { Document, Schema } from "mongoose";
 
-export type Todo = {
-  _id?: Schema.Types.ObjectId;
-  id?: Schema.Types.ObjectId;
+export type Todo = Document & {
   title: string;
   description: string;
   isChecked: boolean;

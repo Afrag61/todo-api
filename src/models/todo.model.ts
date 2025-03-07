@@ -3,11 +3,24 @@ import { Todo } from "../types/todo.types";
 
 const TodoSchema = new Schema<Document & Todo>(
   {
-    id: Schema.Types.ObjectId,
-    title: String,
-    description: String,
-    isChecked: Boolean,
-    createdOn: String,
+    title: {
+      type: String,
+      required: [true, "Title is required"],
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: [true, "Description is required"],
+      trim: true,
+    },
+    isChecked: {
+      type: Boolean,
+      default: false,
+    },
+    createdOn: {
+      type: String,
+      default: new Date().toUTCString(),
+    },
     dueDateTime: String,
     subTodos: [
       {
