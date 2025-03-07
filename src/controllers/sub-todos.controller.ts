@@ -184,11 +184,13 @@ const getAllSubTodosById = async (
       populate: ["subTodos"],
     })
     .then((doc) => {
-      return res.status(200).json({
-        status: "success",
-        length: doc?.subTodos?.length,
-        data: doc?.subTodos,
-      });
+      if (doc) {
+        return res.status(200).json({
+          status: "success",
+          length: doc?.subTodos?.length,
+          data: doc?.subTodos,
+        });
+      }
     })
     .catch((error) => {
       next(new AppError(400, "fail", error as GenericValidationError<{}>[]));
