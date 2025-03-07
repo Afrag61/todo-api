@@ -1,5 +1,5 @@
-import {Schema} from "mongoose";
-import {History} from "../types";
+import { model, Schema } from "mongoose";
+import { History } from "../types/history.types";
 
 const actionTypes = ["Create", "Add", "Update", "Delete"];
 const todoFields = [
@@ -32,4 +32,6 @@ const HistorySchema = new Schema<History>({
   }
 });
 
-export default HistorySchema;
+const HistoryModel = model("History", HistorySchema);
+
+export { HistoryModel, HistorySchema };
