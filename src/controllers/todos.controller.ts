@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import baseController from "./base.controller";
 import { TodoModel } from "../models/todo.model";
 import { todoCriteria } from "../validators/todos.validators";
@@ -6,9 +7,15 @@ import AppError from "../utils/app-error";
 import { GenericValidationError } from "../common/types";
 
 const addTodo = async (req: Request, res: Response, next: NextFunction) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  const user = jwt.decode(token as string, {
+    json: true,
+  });
+
   const doc = await baseController.createOne({
     model: TodoModel,
-    data: req.body,
+    data: { ...req.body, userId: user?.userId },
     criteria: todoCriteria,
     next,
   });
@@ -25,7 +32,12 @@ const getTodoById = async (req: Request, res: Response, next: NextFunction) => {
   const { todoId } = req.params;
 
   baseController
-    .getOne({ model: TodoModel, id: todoId, next, populate: ["subTodos"] })
+    .getOne({
+      model: TodoModel,
+      id: todoId,
+      next,
+      populate: ["subTodos", "userId"],
+    })
     .then((doc) => {
       return res.status(200).json({
         status: "success",
@@ -111,7 +123,7 @@ const getAllTodos = async (req: Request, res: Response, next: NextFunction) => {
     model: TodoModel,
     next,
     pagination: { page, limit },
-    populate: ["subTodos"],
+    populate: ["subTodos", "userId"],
   });
 
   if (docs) {

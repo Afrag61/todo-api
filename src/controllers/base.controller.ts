@@ -73,6 +73,35 @@ const getOne = async <T extends Document>({
   }
 };
 
+const findOne = async <T extends Document>({
+  model,
+  searchCriteria,
+  next,
+  projections,
+  populate,
+}: {
+  model: GenericModel<T>;
+  searchCriteria: Partial<Record<keyof T, string | Function | undefined>>;
+  next: NextFunction;
+  projections?: (keyof T)[];
+  populate?: (keyof T)[];
+}) => {
+  try {
+    const doc = await model
+      .findOne(searchCriteria, projections)
+      ?.populate(populate as string | string[]);
+
+    if (!doc) {
+      return next(new AppError(404, "fail", "No document found"));
+    }
+
+    return doc;
+  } catch (error) {
+    console.log("[[][]] The Error:", error);
+    next(error);
+  }
+};
+
 const updateOne = async <T extends Document>({
   model,
   id,
@@ -160,4 +189,4 @@ const getAll = async <T extends Document>({
   }
 };
 
-export default { deleteOne, updateOne, createOne, getOne, getAll };
+export default { deleteOne, updateOne, createOne, getOne, findOne, getAll };

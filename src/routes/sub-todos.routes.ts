@@ -2,25 +2,24 @@ import express from "express";
 import {
   addSubTodo,
   deleteSubTodoById,
-  // getAllSubTodos,
   getAllSubTodosById,
   getSubTodoById,
   toggleSubTodoCheck,
   updateSubTodoById,
 } from "../controllers/sub-todos.controller";
 
-const router = express.Router({ mergeParams: true });
+const subTodosRouter = express.Router({ mergeParams: true });
 
-router.post("/add-sub-todo", addSubTodo);
+subTodosRouter.post("/add-sub-todo", addSubTodo);
 
-router
+subTodosRouter
   .route("/:subTodoId")
   .get(getSubTodoById)
   .patch(updateSubTodoById)
   .delete(deleteSubTodoById);
 
-router.route("/:subTodoId/toggle-check").patch(toggleSubTodoCheck);
+subTodosRouter.route("/:subTodoId/toggle-check").patch(toggleSubTodoCheck);
 
-router.get("/", getAllSubTodosById);
+subTodosRouter.get("/", getAllSubTodosById);
 
-export default router;
+export default subTodosRouter;

@@ -1,8 +1,10 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-
+import authRoutes from "./src/routes/auth.routes";
 import todosRoutes from "./src/routes/todos.routes";
+import usersRoutes from "./src/routes/users.routes";
+import { verifyToken } from "./src/middleware/auth.middleware";
 import errorHandler from "./src/middleware/error-handler";
 
 const uri =
@@ -29,7 +31,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.json());
 
+// Non Authorized Routes
+app.use("/auth", authRoutes);
+
+// Auth Middleware
+app.use(verifyToken);
+
+// Authorized Routes
 app.use("/todos", todosRoutes);
+app.use("/users", usersRoutes);
 
 app.use(errorHandler);
 

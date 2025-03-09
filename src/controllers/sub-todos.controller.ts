@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import baseController from "./base.controller";
 import { SubTodoModel } from "../models/sub-todo.model";
 import { subTodoCriteria } from "../validators/sub-todos.validators";
@@ -8,12 +9,17 @@ import { GenericValidationError } from "../common/types";
 
 const addSubTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const token = req.headers.authorization?.split(" ")[1];
     const { todoId } = req.params;
+
+    const user = jwt.decode(token as string, {
+      json: true,
+    });
 
     baseController
       .createOne({
         model: SubTodoModel,
-        data: { ...req.body, todoId },
+        data: { ...req.body, todoId, userId: user?.userId },
         criteria: subTodoCriteria,
         next,
       })

@@ -7,5 +7,5 @@ export type Todo = Document & {
   createdOn: string;
   dueDateTime: string;
   subTodos: Schema.Types.ObjectId[];
-  // history: Schema.Types.ObjectId[];
+  userId: Schema.Types.ObjectId;
 };

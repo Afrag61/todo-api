@@ -28,15 +28,16 @@ const TodoSchema = new Schema<Document & Todo>(
         ref: "SubTodo",
       },
     ],
-    /* history: [{
+    userId: {
       type: Schema.Types.ObjectId,
-      ref: "History",
-    }], */
+      ref: "User",
+      required: [true, "User is required"],
+    },
   },
   {
     versionKey: false,
     toJSON: {
-      transform: (doc, ret) => {
+      transform: (_, ret) => {
         ret.id = ret._id;
         delete ret._id;
       },
