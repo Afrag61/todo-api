@@ -70,5 +70,17 @@
         "method": "GET"
       }
     }
+  },
+  "auth": {
+    "register": {
+      "url": "http://localhost:3000/auth/register",
+      "path": "/register",
+      "method": "POST"
+    },
+    "login": {
+      "url": "http://localhost:3000/auth/login",
+      "path": "/login",
+      "method": "POST"
+    }
   }
 }
