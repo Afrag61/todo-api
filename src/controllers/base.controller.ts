@@ -97,7 +97,6 @@ const findOne = async <T extends Document>({
 
     return doc;
   } catch (error) {
-    console.log("[[][]] The Error:", error);
     next(error);
   }
 };

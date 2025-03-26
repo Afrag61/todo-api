@@ -10,7 +10,10 @@ const SubTodoSchema = new Schema<Document & SubTodo>(
       type: Boolean,
       default: false,
     },
-    createdOn: String,
+    createdOn: {
+      type: String,
+      default: new Date().toUTCString(),
+    },
     dueDateTime: String,
   },
   {
