@@ -6,6 +6,7 @@ import todosRoutes from "./src/routes/todos.routes";
 import usersRoutes from "./src/routes/users.routes";
 import { verifyToken } from "./src/middleware/auth.middleware";
 import errorHandler from "./src/middleware/error-handler";
+import cors from "cors";
 
 const uri =
   "mongodb+srv://mfrag38:Wx11Aa50E^nV@cluster0.5yhdu.mongodb.net/todo-app?retryWrites=true&w=majority&appName=Cluster0";
@@ -17,15 +18,7 @@ const clientOptions: mongoose.ConnectOptions = {
 const app = express();
 
 // CORS
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, PUT, DELETE"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
