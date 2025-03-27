@@ -41,20 +41,20 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
         .then((doMatch) => {
           if (!doMatch) {
             next(new AppError(401, "fail", "Wrong email or password"));
+          } else {
+            const token = jwt.sign(
+              JSON.stringify({
+                userId: doc._id,
+                userEmail: doc.email,
+              }),
+              AuthConfig.TOKEN_KEY as string
+            );
+
+            res.status(200).json({
+              status: "success",
+              token,
+            });
           }
-
-          const token = jwt.sign(
-            JSON.stringify({
-              userId: doc._id,
-              userEmail: doc.email,
-            }),
-            AuthConfig.TOKEN_KEY as string
-          );
-
-          res.status(200).json({
-            status: "success",
-            token,
-          });
         })
         .catch((error) => {
           next(error);
